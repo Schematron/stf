@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="stf" default="run.schematron" basedir=".">
+    <description>Tasks for running both Schematron and tests of Schematron.</description>
+
+  <dirname property="stf.basedir" file="${ant.file.stf}"/>
+
+  <pathconvert property="stf.basedir.converted" dirsep="/">
+    <path location="${stf.basedir}" />
+    <!-- Ant under cygwin uses a lowercase drive letter, which Java
+         programs don't always recognise as a drive letter, so
+         translate. -->
+    <map from="c:" to="/C:"/>
+    <map from="d:" to="/D:"/>
+    <map from="e:" to="/E:"/>
+  </pathconvert>
+
+  <!-- Current project folder as file path. -->
+  <property name="pd" value="."/>
+  <!-- Current file folder as file path. -->
+  <property name="pwd" value="${user.dir}"/>
+  <property name="oxygen.frameworks.dir"
+	    value="${oxygenInstallDir}/frameworks"/>
+
+  <!-- XML file of properties determining or describing local
+       configuration. -->
+  <property
+      name="properties.xml"
+      location="${pwd}/properties.xml"/>
+  <property
+      file="${properties.xml}"/>
+
+  <!-- File of properties determining or describing 'stf' system
+       configuration. -->
+  <property name="stf.properties.xml"
+	    value="${stf.basedir.converted}/properties.xml"/>
+  <property file="${stf.properties.xml}"/>
+
+  <!-- Schematron properties. -->
+  <!-- Top-level Schematron schema file. -->
+  <property name="schematron" value="${pwd}/schematron/testing.sch"/>
+  <!-- Directory containing Schematron test files. -->
+  <!-- Should be absolute path for sake of XProc testing of Schematron. -->
+  <property name="tests.dir" value="${pwd}/tests"/>
+
+  <property
+      name="iso.schematron.dir"
+      value="${stf.basedir.converted}/iso-schematron-xslt2"/>
+
+  <property name="calabash.jar"
+	    value="${oxygenInstallDir}/lib/xproc/calabash/calabash.jar"/>
+  <property name="saxon.jar"
+	    value="${oxygenInstallDir}/lib/saxon9ee.jar"/>
+  <property name="resolver.jar"
+	    value="${oxygenInstallDir}/lib/resolver.jar"/>
+  <property name="resolver.class"
+	    value="org.apache.xml.resolver.tools.CatalogResolver"/>
+
+  <macrodef name="test.schematron"
+	    description="Tests Schematron using Calabash and Saxon">
+    <attribute name="schematron"
+	       default="${schematron}"
+	       description="Schematron file to use." />
+    <sequential>
+      <java classname="com.xmlcalabash.drivers.Main"
+	    fork="true">
+	<classpath>
+	  <pathelement location="${calabash.jar}"/>
+	  <pathelement location="${saxon.jar}"/>
+	  <pathelement location="${resolver.jar}"/>
+	</classpath>
+	<sysproperty key="xml.catalog.files"
+		     value="schema/catalog.xml"/>
+	<sysproperty key="java.util.logging.ConsoleHandler.level"
+		     value="ERROR" />
+	<arg value="-U"/>
+	<arg value="${resolver.class}"/>
+	<arg value="-E"/>
+	<arg value="${resolver.class}"/>
+	<arg value="${stf.basedir.converted}/xproc/test-schematron.xpl"/>
+	<arg value="path=${tests.dir}"/>
+	<arg value="schematron=${schematron}"/>
+      </java>
+    </sequential>
+  </macrodef>
+
+  <target name="test.schematron"
+	  description="Run Schematron on the test files.">
+    <test.schematron />
+  </target>
+
+  <property name="deleteonexit" value="true" />
+  <macrodef name="schematron"
+	    description="Runs Schematron using Saxon">
+    <attribute name="schematron"
+	       default="${schematron}"
+	       description="Schematron file to use." />
+    <attribute name="includes"
+	       default="**/*.xml"
+	       description="Files on which to run Schematron." />
+    <attribute name="saxon.jar"
+	       default="${saxon.jar}"
+	       description="Location of Saxon jar." />
+    <attribute name="deleteonexit"
+	       default="${deleteonexit}"
+	       description="Whether to delete intermediate XSLT files on exit." />
+    <sequential>
+      <echo message="Running '@{schematron}' Schematron on XML files in '${tests.dir}'.  SVRL in 'out'."/>
+      <mkdir dir="${pwd}/tmp"/>
+      <mkdir dir="${pwd}/out"/>
+      <tempfile property="expanded.sch"
+		suffix=".sch"
+		destdir="tmp"
+		deleteonexit="@{deleteonexit}"/>
+      <tempfile property="unabstract.sch"
+		suffix=".sch"
+		destdir="tmp"
+		deleteonexit="@{deleteonexit}"/>
+      <tempfile property="schematron.xsl"
+		suffix=".xsl"
+		destdir="tmp"
+		deleteonexit="@{deleteonexit}"/>
+      <tempfile property="check-schematron.xsl"
+		suffix=".xsl"
+		destdir="${build.dir}/tmp"
+		deleteonexit="@{deleteonexit}"/>
+
+      <!-- expand inclusions -->
+      <xslt basedir="${pwd}"
+	    style="${iso.schematron.dir}/iso_dsdl_include.xsl"
+	    in="@{schematron}"
+	    out="${expanded.sch}"
+	    classpath="@{saxon.jar}">
+	<factory name="net.sf.saxon.TransformerFactoryImpl">
+	  <attribute
+	      name="http://saxon.sf.net/feature/allow-external-functions"
+	      value="true"/>
+	  <attribute
+	      name="http://saxon.sf.net/feature/linenumbering"
+	      value="true"/>
+	</factory>
+      </xslt>
+
+      <!-- expand abstract patterns -->
+      <xslt basedir="${pwd}"
+	    style="${iso.schematron.dir}/iso_abstract_expand.xsl"
+	    in="${expanded.sch}"
+	    out="${unabstract.sch}"
+	    classpath="@{saxon.jar}">
+	<factory name="net.sf.saxon.TransformerFactoryImpl">
+	  <attribute
+	      name="http://saxon.sf.net/feature/allow-external-functions"
+	      value="true"/>
+	  <attribute
+	      name="http://saxon.sf.net/feature/linenumbering"
+	      value="true"/>
+	</factory>
+      </xslt>
+
+      <!-- compile it -->
+      <xslt basedir="${pwd}"
+	    style="${iso.schematron.dir}/iso_svrl_for_xslt2.xsl"
+	    in="${unabstract.sch}"
+	    out="${schematron.xsl}"
+	    classpath="@{saxon.jar}">
+	<factory name="net.sf.saxon.TransformerFactoryImpl">
+	  <attribute
+	      name="http://saxon.sf.net/feature/allow-external-functions"
+	      value="true"/>
+	  <attribute
+	      name="http://saxon.sf.net/feature/linenumbering"
+	      value="true"/>
+	</factory>
+      </xslt>
+
+      <!-- validate -->
+      <xslt basedir="${pwd}"
+	    destdir="${pwd}/out"
+	    includes="@{includes}"
+	    style="${schematron.xsl}"
+	    classpath="@{saxon.jar}">
+	<factory name="net.sf.saxon.TransformerFactoryImpl">
+	  <attribute
+	      name="http://saxon.sf.net/feature/allow-external-functions"
+	      value="true"/>
+	  <attribute
+	      name="http://saxon.sf.net/feature/linenumbering"
+	      value="true"/>
+	</factory>
+	<identitymapper />
+      </xslt>
+
+    <!-- compile check schematron -->
+    <xslt basedir="${pwd}"
+	  style="${iso.schematron.dir}/iso_schematron_message_xslt2.xsl"
+	  in="${system.basedir}/schematron/check.sch"
+	  out="${check-schematron.xsl}"
+	  classpath="${saxon.jar}">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+	<attribute
+	    name="http://saxon.sf.net/feature/allow-external-functions"
+	    value="true"/>
+	<attribute
+	    name="http://saxon.sf.net/feature/linenumbering"
+	    value="true"/>
+      </factory>
+      <identitymapper />
+    </xslt>
+
+    <!-- check -->
+    <xslt basedir="${pwd}/out"
+	  destdir="${pwd}/check"
+	  includes="@{includes}"
+	  style="${check-schematron.xsl}"
+	  classpath="${saxon.jar}">
+      <identitymapper />
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+	<attribute
+	    name="http://saxon.sf.net/feature/validation-warnings"
+	    value="false"/>
+	<attribute
+	    name="http://saxon.sf.net/feature/linenumbering"
+	    value="true"/>
+      </factory>
+    </xslt>
+    </sequential>
+  </macrodef>
+
+  <target name="run.schematron">
+    <schematron />
+  </target>
+
+  <target name="echoproperties">
+    <echoproperties />
+  </target>
+
+</project>
