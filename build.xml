@@ -42,9 +42,13 @@
   <!-- Should be absolute path for sake of XProc testing of Schematron. -->
   <property name="tests.dir" value="${pwd}/tests"/>
 
+  <!-- Binding with which to run Schematron. -->
+  <property
+      name="schematron.binding"
+      value="xslt2" />
   <property
       name="iso.schematron.dir"
-      value="${stf.basedir.converted}/iso-schematron-xslt2"/>
+      value="${stf.basedir.converted}/iso-schematron-${schematron.binding}"/>
 
   <property name="calabash.jar"
 	    value="${oxygenInstallDir}/lib/xproc/calabash/calabash.jar"/>
@@ -158,7 +162,7 @@
 
       <!-- compile it -->
       <xslt basedir="${pwd}"
-	    style="${iso.schematron.dir}/iso_svrl_for_xslt2.xsl"
+	    style="${iso.schematron.dir}/iso_svrl_for_${schematron.binding}.xsl"
 	    in="${unabstract.sch}"
 	    out="${schematron.xsl}"
 	    classpath="@{saxon.jar}">
@@ -191,7 +195,7 @@
 
     <!-- compile check schematron -->
     <xslt basedir="${pwd}"
-	  style="${iso.schematron.dir}/iso_schematron_message_xslt2.xsl"
+	  style="${iso.schematron.dir}/iso_schematron_message_${schematron.binding}.xsl"
 	  in="${system.basedir}/schematron/check.sch"
 	  out="${check-schematron.xsl}"
 	  classpath="${saxon.jar}">

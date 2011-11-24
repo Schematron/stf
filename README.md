@@ -52,7 +52,7 @@ Reguires Ant and Calabosh.  Calabash (as used here) requires Saxon.  All three r
 * `${schematron}`
 
     Schematron file to test.
-    
+
 * `${tests.dir}`
 
     Directory containing test files.
@@ -144,6 +144,12 @@ No `assert` or `report` are expecetd.
 The pipeline currently depends on Calabash extensions.
 
 The version of Calabash used in testing depended on Saxon 9.2 or later.
+
+## Running (Not Testing) Schematron
+
+Ant build file also includes `schematron` macro and `run.schematron`
+target to make it easy to run Schematron on real files once you're
+sure it works on your tests.
 
 ## License
 

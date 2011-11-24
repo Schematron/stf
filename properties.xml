@@ -32,6 +32,10 @@
 <!-- Schematron properties. -->
 <!-- Top-level Schematron schema file. -->
 <entry key="schematron">${system.basedir.converted}/schematron/testing.sch</entry>
-<!-- Location of ISO Schematron XSLT2 implementation -->
-<entry key="iso.schematron.dir1">${system.basedir.converted}/iso-schematron-xslt2</entry>
+
+<!-- Binding with which to run (not test) Schematron. -->
+<entry key="schematron.binding">xslt2</entry>
+
+<!-- Location of ISO Schematron XSLT implementation -->
+<entry key="iso.schematron.dir">${stf.basedir.converted}/iso-schematron-${schematron.binding}</entry>
 </properties>
