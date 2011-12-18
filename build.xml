@@ -46,6 +46,7 @@
   <property
       name="schematron.binding"
       value="xslt2" />
+  <!-- Location of ISO Schematron XSLT implementation -->
   <property
       name="iso.schematron.dir"
       value="${stf.basedir.converted}/iso-schematron-${schematron.binding}"/>
