@@ -18,7 +18,7 @@ expected result and report just the unexpected.
 
 ## Prerequisites
 
-Reguires Ant and Calabosh.  Calabash (as used here) requires Saxon.  All three require Java.
+Reguires Ant and Calabash.  Calabash (as used here) requires Saxon.  All three require Java.
 
 ## Usage
 
@@ -113,7 +113,7 @@ failed asserts or successful reports with
     A mismatch between the expected and actual
 count is reported as an error.
 
-    A ROLE starting with # does not have its
+    A _ROLE_ starting with # does not have its
 count checked.
 
 
@@ -121,9 +121,9 @@ count checked.
 
     <?stf ERROR_FOO:2 ERROR_BAR:1 ?>
 
-An `assert` or `report` with `role="ERROR_FOO"` is
-expected twice in the SVRL, and either with
-`role="ERROR_BAR"` is expected once.
+An `assert` or `report` with `role="ERROR_FOO"` is expected twice in
+the SVRL from the test document, and either with `role="ERROR_BAR"` is
+expected once.
 
 
     <?stf ERROR_FOO:2 #ERROR_BAR:1 ?>
@@ -135,7 +135,7 @@ expected twice in the SVRL, and no `assert` or `report` with
 
     <?stf #NONE ?>
 
-No `assert` or `report` are expecetd.
+No `assert` or `report` are expecetd for the current document.
 
 
 
