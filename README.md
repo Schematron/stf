@@ -4,24 +4,15 @@
 
 # Schematron Testing Framework (stf)
 
-A test suite for schematron ordinarily contains many
-instances of contexts where a Schematron assert is expected
-to fail or a report to be successful.  For any reasonably
-sized test suite, there will be so many that it becomes
-impossible to separate the expected results from the
-unexpected.
-
-stf is a XProc pipeline that uses a PI in the test document that
-indicates the expected 'assert's and 'report's to winnow out the
-expected result and report just the unexpected.
-
-## What is Schematron?
-
 Schematron (http://www.schematron.com/) is a language for making
 assertions about the presence or absence of patterns in XML documents.
 It is based not on grammars but on finding tree patterns in the parsed
 document.  If you know XPath or the XSLT expression language, you can
 use Schematron.
+
+stf is a XProc pipeline that runs your Schematron on your test files and reports any unexpected results.
+
+## Why use Schematron?
 
 Schematron allows you to develop and mix two kinds of schemas:
 
@@ -31,14 +22,14 @@ Schematron allows you to develop and mix two kinds of schemas:
 
 An example Schematron `rule` with one `assert` and one `report`:
 
-        <rule id="baz" context="baz">
-          <assert role="ERROR_FOO"
-                  test="count(foo) = count(bar)">
-        Number of 'foo' and 'bar' should be equal.</assert>
-          <report role="ERROR_BAR"
-                  test="count(bar) > 5">
-        ‘baz’ should contain no more than 5 ‘bar’.</report>
-        </rule>
+    <rule id="baz" context="baz">
+      <assert role="ERROR_FOO"
+              test="count(foo) = count(bar)">
+    Number of 'foo' and 'bar' should be equal.</assert>
+    <report role="ERROR_BAR"
+            test="count(bar) > 5">
+    ‘baz’ should contain no more than 5 ‘bar’.</report>
+    </rule>
 
 
 ## Why Use `stf`?
@@ -71,7 +62,7 @@ license.
 
 Requires Ant and Calabash.  Calabash (as used here) requires Saxon.  All three require Java.
 
-## &lt;?stf?> Processing Instruction
+## `<?stf?>` Processing Instruction
 
 The format of the PI is:
 
@@ -126,10 +117,10 @@ documents, the schema expressed by the Schematron, and the expected
 Schematron results are deliberately mismatched for the sake of providing
 the example `stf` output below.
 
-        <?stf ERROR_BAR:1 ERROR_QUX:1 #ERROR_LATER:3 ?>
-        <baz>
-          <bar/><bar/><bar/><bar/><bar/><bar/>
-        </baz>
+    <?stf ERROR_BAR:1 ERROR_QUX:1 #ERROR_LATER:3 ?>
+    <baz>
+      <bar/><bar/><bar/><bar/><bar/><bar/>
+    </baz>
 
    A failed `assert` or successful `report` with `role="ERROR_BAR"`
 is expected once in the SVRL from the test document, and
@@ -137,10 +128,10 @@ either with `role="ERROR_QUX"` is expected once, and no
 `assert` or `report` with `role="ERROR_LATER"` is expected,
 since `#` precedes `ERROR_LATER`.
 
-        <?stf #NONE ?>
-        <baz>
-          <bar/>
-        </baz>
+    <?stf #NONE ?>
+    <baz>
+      <bar/>
+    </baz>
 	
 No `assert` or `report` are expected for the current document.
 
@@ -184,25 +175,25 @@ ning the Schematron on the first file above produces a `report` for
 `ERROR_BAR`, but since that report is expected, `stf` does not report it as
 an error.
 
-        <errors>
-          <result>
-            <file>file:foo-1.xml</file>
-            <error>Should be 1 reports or asserts for ERROR_QUX.
-        Found 0.</error>
-            <error>Unexpected: ERROR_FOO:1</error>
-          </result>
-          <result>
-            <file>file:foo-2.xml</file>
-            <error>Should be no reports or asserts.
-        Unexpected: ERROR_FOO:1</error>
-          </result>
-        </errors>
+    <errors>
+      <result>
+        <file>file:foo-1.xml</file>
+        <error>Should be 1 reports or asserts for ERROR_QUX.
+    Found 0.</error>
+        <error>Unexpected: ERROR_FOO:1</error>
+      </result>
+      <result>
+        <file>file:foo-2.xml</file>
+        <error>Should be no reports or asserts.
+    Unexpected: ERROR_FOO:1</error>
+      </result>
+    </errors>
 
 When the Schematron, the test documents,
 and their expected Schematron results are
 aligned, the stf output is:
 
-        <errors/>
+    <errors/>
 
 
 ## Ant Properties
