@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="stf" default="run.schematron" basedir=".">
-    <description>Tasks for running both Schematron and tests of Schematron.</description>
+  <description>Tasks for running both Schematron and tests of
+  Schematron.</description>
 
   <dirname property="stf.basedir" file="${ant.file.stf}"/>
 
@@ -51,22 +52,39 @@
       name="iso.schematron.dir"
       value="${stf.basedir.converted}/iso-schematron-${schematron.binding}"/>
 
+  <!-- Location of Calabash jar. -->
   <property name="calabash.jar"
 	    value="${oxygenInstallDir}/lib/xproc/calabash/calabash.jar"/>
-  <property name="saxon.jar"
-	    value="${oxygenInstallDir}/lib/saxon9ee.jar"/>
+  <!-- Location of XML catalog resolver library. -->
   <property name="resolver.jar"
 	    value="${oxygenInstallDir}/lib/resolver.jar"/>
+  <!-- Class name of XML catalog resolver. -->
   <property name="resolver.class"
 	    value="org.apache.xml.resolver.tools.CatalogResolver"/>
+
+  <!-- Location of Saxon 9.2 (or later) jar. -->
+  <!--<property name="saxon.jar"
+	    value="${oxygenInstallDir}/lib/saxon9ee.jar"/>-->
+  <!-- If not already set, saxon.jar location depends on OS. -->
+  <condition property="saxon.jar" value="${saxon.jar.windows}">
+    <os family="windows" />
+  </condition>
+  <condition property="saxon.jar" value="${saxon.jar.mac}">
+    <os family="mac" />
+  </condition>
+  <property name="saxon.jar" value="${saxon.jar.unix}" />
 
   <macrodef name="test.schematron"
 	    description="Tests Schematron using Calabash and Saxon">
     <attribute name="schematron"
 	       default="${schematron}"
 	       description="Schematron file to use." />
+    <attribute name="tests.dir"
+	       default="${tests.dir}"
+	       description="Directory containing test files." />
     <sequential>
       <java classname="com.xmlcalabash.drivers.Main"
+	    dir="${pwd}"
 	    fork="true">
 	<classpath>
 	  <pathelement location="${calabash.jar}"/>
@@ -82,8 +100,8 @@
 	<arg value="-E"/>
 	<arg value="${resolver.class}"/>
 	<arg value="${stf.basedir.converted}/xproc/test-schematron.xpl"/>
-	<arg value="path=${tests.dir}"/>
-	<arg value="schematron=${schematron}"/>
+	<arg value="path=@{tests.dir}"/>
+	<arg value="schematron=@{schematron}"/>
       </java>
     </sequential>
   </macrodef>
