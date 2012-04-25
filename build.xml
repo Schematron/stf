@@ -252,8 +252,17 @@
     <schematron />
   </target>
 
+  <!-- Utility targets. -->
+
   <target name="echoproperties">
     <echoproperties />
+  </target>
+
+  <target name="markdown">
+    <exec executable="markdown"
+	  output="README.html">
+      <arg value="README.md" />
+    </exec>
   </target>
 
 </project>
