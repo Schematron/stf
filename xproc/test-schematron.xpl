@@ -51,7 +51,7 @@
 
      The format of the PI is:
 
-     <?stf ( '#NONE' | ROLE ':' COUNT ( \s? ROLE ':' COUNT )* ) ?>
+     <?stf ( '#NONE' | ROLE ':' COUNT ( \s+ ROLE ':' COUNT )* ) ?>
 
      where:
 
