@@ -15,9 +15,13 @@
 <entry key="oxygenInstallDir">/usr/local/Oxygen XML Editor 13</entry>
 <!-- When you have <oXygen/> installed, it's the easiest place to find
      the jars you need. -->
+<!-- Location of Calabash jar. -->
 <entry key="calabash.jar">${oxygenInstallDir}/lib/xproc/calabash/calabash.jar</entry>
+<!-- Location of Saxon 9.2 (or later) jar. -->
 <entry key="saxon.jar">${oxygenInstallDir}/lib/saxon9ee.jar</entry>
+<!-- Location of XML catalog resolver library. -->
 <entry key="resolver.jar">${oxygenInstallDir}/lib/resolver.jar</entry>
+<!-- Class name of XML catalog resolver. -->
 <entry key="resolver.class">org.apache.xml.resolver.tools.CatalogResolver</entry>
 
 <!-- Location of .jar for Saxon XSLT 2.0 (or later) processor -->
@@ -25,9 +29,6 @@
 <entry key="saxon.jar.mac">/usr/share/java/saxon9.jar</entry>
 <entry key="saxon.jar.windows">/E:/saxon/saxon9he.jar</entry>
 
-
-<!-- Location of SAX2 parser used by 'xsd' target. -->
-<entry key="parser.jar">/usr/share/java/xercesImpl.jar</entry>
 
 <!-- Schematron properties. -->
 <!-- Top-level Schematron schema file. -->
