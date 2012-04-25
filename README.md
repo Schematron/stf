@@ -18,7 +18,7 @@ expected result and report just the unexpected.
 
 ## Prerequisites
 
-Reguires Ant and Calabash.  Calabash (as used here) requires Saxon.  All three require Java.
+Requires Ant and Calabash.  Calabash (as used here) requires Saxon.  All three require Java.
 
 ## Usage
 
@@ -38,7 +38,7 @@ Reguires Ant and Calabash.  Calabash (as used here) requires Saxon.  All three r
     
         ant -f /path/to/stf/build.xml test.schemtron
 	
-    or you can <include> the stf `build.xml` in your local `build.xml`:
+    or you can import the stf `build.xml` into your local `build.xml`:
     
         <property name="stf.dir" location="/path/to/stf" />
         <import file="${stf.dir}/build.xml" />
@@ -78,7 +78,7 @@ Reguires Ant and Calabash.  Calabash (as used here) requires Saxon.  All three r
 
 The format of the PI is:
 
-    <?stf ( '#NONE' | ROLE ':' COUNT ( \s? ROLE ':' COUNT )* ) ?>
+    <?stf ( '#NONE' | ROLE ':' COUNT ( \s+ ROLE ':' COUNT )* ) ?>
 
 where:
 
@@ -135,7 +135,7 @@ expected twice in the SVRL, and no `assert` or `report` with
 
     <?stf #NONE ?>
 
-No `assert` or `report` are expecetd for the current document.
+No `assert` or `report` are expected for the current document.
 
 
 
