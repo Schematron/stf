@@ -82,9 +82,15 @@
     <attribute name="tests.dir"
 	       default="${tests.dir}"
 	       description="Directory containing test files." />
+    <attribute name="basedir"
+	       default="${pwd}"
+	       description="Base directory." />
+    <attribute name="catalog.xml"
+	       default=""
+	       description="XML catalog file." />
     <sequential>
       <java classname="com.xmlcalabash.drivers.Main"
-	    dir="${pwd}"
+	    dir="@{basedir}"
 	    fork="true">
 	<classpath>
 	  <pathelement location="${calabash.jar}"/>
@@ -92,7 +98,7 @@
 	  <pathelement location="${resolver.jar}"/>
 	</classpath>
 	<sysproperty key="xml.catalog.files"
-		     value="schema/catalog.xml"/>
+		     value="@{catalog.xml}"/>
 	<sysproperty key="java.util.logging.ConsoleHandler.level"
 		     value="ERROR" />
 	<arg value="-U"/>
@@ -111,7 +117,7 @@
     <test.schematron />
   </target>
 
-  <property name="deleteonexit" value="true" />
+  <property name="deleteonexit" value="false" />
   <macrodef name="schematron"
 	    description="Runs Schematron using Saxon">
     <attribute name="schematron"
@@ -120,6 +126,9 @@
     <attribute name="includes"
 	       default="**/*.xml"
 	       description="Files on which to run Schematron." />
+    <attribute name="basedir"
+	       default="${pwd}"
+	       description="Base directory from which to run Schematron." />
     <attribute name="saxon.jar"
 	       default="${saxon.jar}"
 	       description="Location of Saxon jar." />
@@ -131,24 +140,28 @@
       <mkdir dir="${pwd}/tmp"/>
       <mkdir dir="${pwd}/out"/>
       <tempfile property="expanded.sch"
+		prefix="expanded"
 		suffix=".sch"
 		destdir="tmp"
 		deleteonexit="@{deleteonexit}"/>
       <tempfile property="unabstract.sch"
+		prefix="unabstract"
 		suffix=".sch"
 		destdir="tmp"
 		deleteonexit="@{deleteonexit}"/>
       <tempfile property="schematron.xsl"
+		prefix="schematron"
 		suffix=".xsl"
 		destdir="tmp"
 		deleteonexit="@{deleteonexit}"/>
       <tempfile property="check-schematron.xsl"
+		prefix="check-schematron"
 		suffix=".xsl"
-		destdir="${build.dir}/tmp"
+		destdir="${pwd}/tmp"
 		deleteonexit="@{deleteonexit}"/>
 
       <!-- expand inclusions -->
-      <xslt basedir="${pwd}"
+      <xslt basedir="@{basedir}"
 	    style="${iso.schematron.dir}/iso_dsdl_include.xsl"
 	    in="@{schematron}"
 	    out="${expanded.sch}"
@@ -164,7 +177,7 @@
       </xslt>
 
       <!-- expand abstract patterns -->
-      <xslt basedir="${pwd}"
+      <xslt basedir="@{basedir}"
 	    style="${iso.schematron.dir}/iso_abstract_expand.xsl"
 	    in="${expanded.sch}"
 	    out="${unabstract.sch}"
@@ -180,7 +193,7 @@
       </xslt>
 
       <!-- compile it -->
-      <xslt basedir="${pwd}"
+      <xslt basedir="@{basedir}"
 	    style="${iso.schematron.dir}/iso_svrl_for_${schematron.binding}.xsl"
 	    in="${unabstract.sch}"
 	    out="${schematron.xsl}"
@@ -194,9 +207,9 @@
 	      value="true"/>
 	</factory>
       </xslt>
-
+      <echo message="Validate" />
       <!-- validate -->
-      <xslt basedir="${pwd}"
+      <xslt basedir="@{basedir}"
 	    destdir="${pwd}/out"
 	    includes="@{includes}"
 	    style="${schematron.xsl}"
@@ -213,9 +226,9 @@
       </xslt>
 
     <!-- compile check schematron -->
-    <xslt basedir="${pwd}"
+    <xslt basedir="@{basedir}"
 	  style="${iso.schematron.dir}/iso_schematron_message_${schematron.binding}.xsl"
-	  in="${system.basedir}/schematron/check.sch"
+	  in="${stf.basedir.converted}/schematron/check.sch"
 	  out="${check-schematron.xsl}"
 	  classpath="${saxon.jar}">
       <factory name="net.sf.saxon.TransformerFactoryImpl">
