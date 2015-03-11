@@ -192,8 +192,9 @@ XPROC PROCESSOR
                 name="href"
                 select="$file"/>
         </p:load>
-        <!-- Don't die if an assert fails: many asserts
-             will fail when running tests on the Schematron. -->
+        <!-- Don't die if an assert fails: when running tests on the
+             Schematron, it's likely that many asserts will be
+             supposed to fail. -->
         <p:validate-with-schematron
             name="schematron"
             assert-valid="false">
