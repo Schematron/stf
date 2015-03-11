@@ -1907,6 +1907,13 @@ which require a preprocess.
 	<!-- Swallow old namespace elements: there is an upfront test for them elsewhere -->
 	<xsl:template match="schold:*"  priority="-2" />
 	 
+  <!-- FIX : Use relative URI for xsl:include used in schematron -->
+  <xsl:template match="xsl:include" priority="1">
+    <xsl:copy>
+      <xsl:attribute name="href" select="resolve-uri(@href, base-uri())"/>
+    </xsl:copy>
+  </xsl:template>
+
 	<xsl:template match="*"  priority="-3">
 	    <xsl:choose>
 	       <xsl:when test=" $allow-foreign = 'false' ">

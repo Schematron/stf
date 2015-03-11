@@ -1502,6 +1502,13 @@
 </xsl:template>
 
 
+  <!-- FIX : Use relative URI for xsl:include used in schematron -->
+  <xsl:template match="xsl:include" mode="dsdl:go" priority="1">
+<xsl:message select="string(@href), string(base-uri()), resolve-uri(@href, base-uri())" />
+    <xsl:copy>
+      <xsl:attribute name="href" select="resolve-uri(@href, base-uri())"/>
+    </xsl:copy>
+  </xsl:template>
 
 
 
