@@ -10,5 +10,5 @@
      previously declared either earlier in the build process or
      earlier in the current property file. -->
 
-<entry key="saxon.jar">/E:/saxon/saxon9he.jar</entry>
+<entry key="saxon.jar.windows">/E:/saxon/saxon9he.jar</entry>
 </properties>
