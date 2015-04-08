@@ -1,0 +1,4 @@
+<?stf ERROR_BAR:1 ERROR_QUX:1 #ERROR_LATER:3 ?>
+<baz>
+ <bar/><bar/><bar/><bar/><bar/><bar/>
+</baz>
