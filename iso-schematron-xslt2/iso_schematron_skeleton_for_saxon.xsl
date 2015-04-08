@@ -1641,7 +1641,7 @@ which require a preprocess.
 				
 			<xsl:apply-templates/>
 			<!-- DPC introduce context-xpath and select-contexts variables -->
-			<xsl:if test="not($select-contexts)">
+			<xsl:if test="not($select-contexts) and not(starts-with(tokenize(@context, '/')[last()], '@'))">
 			  <axsl:apply-templates select="{$context-xpath}" mode="M{count(../preceding-sibling::*)}"/>
 			</xsl:if>
 		</axsl:template>
