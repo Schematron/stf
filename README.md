@@ -2,7 +2,7 @@
 * Author: Mentea
 * Date: 24 November 2011
 
-# Schematron Testing Framework (stf)
+# Schematron Testing Framework (`stf`)
 
 Schematron (http://www.schematron.com/) is a language for making
 assertions about the presence or absence of patterns in XML documents.
@@ -10,7 +10,7 @@ It is based not on grammars but on finding tree patterns in the parsed
 document.  If you know XPath or the XSLT expression language, you can
 use Schematron.
 
-stf is a XProc pipeline that runs your Schematron on your test files and reports any unexpected results.
+`stf` is a XProc pipeline that runs your Schematron on your test files and reports any unexpected results.
 
 ## Why use Schematron?
 
@@ -53,7 +53,7 @@ and all you see is what’s extra or missing.  And when you have no more
 unexpected results from your test documents, you’re ready to use the
 Schematron on your real documents.
 
-stf was created by Mentea (http://www.mentea.net).  It is Open Source
+`stf` was created by Mentea (http://www.mentea.net).  It is Open Source
 and under a BSD license.  You are welcome to use it, to contribute to
 the project, or to fork it in accordance with the terms of the
 license.
@@ -158,7 +158,7 @@ No `assert` or `report` are expected for the current document.
         <property name="stf.dir" location="/path/to/stf" />
         <import file="${stf.dir}/build.xml" />
 
-    and run the `test.schematron` target, or you can import the stf
+    and run the `test.schematron` target, or you can import the `stf`
     `build.xml` and use the `<test.schematron />` macro in your local
     `build.xml` (maybe along with your other tests):
     
@@ -191,7 +191,7 @@ an error.
 
 When the Schematron, the test documents,
 and their expected Schematron results are
-aligned, the stf output is:
+aligned, the `stf` output is:
 
     <errors/>
 
