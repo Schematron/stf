@@ -5,14 +5,23 @@
   <property name="stf.dir" location="${basedir}/.."/>
   <import file="${stf.dir}/build.xml" />
 
+<pathconvert property="basedir.converted" dirsep="/">
+  <path location="${basedir}" />
+  <!-- Ant under cygwin uses a lowercase drive letter, which some Java
+       programs don't recognise as a drive letter, so translate. -->
+  <map from="c:" to="/C:"/>
+  <map from="d:" to="/D:"/>
+  <map from="e:" to="/E:"/>
+</pathconvert>
+
   <target name="test.all"
 	  depends="test.stf-errors, test.no-stf-errors" />
 
   <target name="test.stf-errors">
-    <test.schematron schematron="${basedir}/example.sch" tests.dir="${basedir}/stf-errors" />
+    <test.schematron schematron="${basedir.converted}/example.sch" tests.dir="${basedir.converted}/stf-errors" />
   </target>
 
   <target name="test.no-stf-errors">
-    <test.schematron schematron="${basedir}/example.sch" tests.dir="${basedir}/no-stf-errors" />
+    <test.schematron schematron="${basedir.converted}/example.sch" tests.dir="${basedir.converted}/no-stf-errors" />
   </target>
 </project>
